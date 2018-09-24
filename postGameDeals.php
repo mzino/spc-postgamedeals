@@ -1,32 +1,42 @@
 <?php
 
 function sendPost($mess){
-	$topic="608672";
+	$topic="/1250-consigli-per-gli-acquisti-best-sezione-games-2017-anche-spazio-pc-tra-i-curatori-di-steam-seguiteci/";
+	$topicId="1250";
 	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, "http://www.gamesforum.it/board/");
+	curl_setopt($ch, CURLOPT_URL, "https://www.gamesforum.it");
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-	curl_setopt($ch, CURLOPT_COOKIE,'bb_userid=196602; bb_password=cd4532ac32b760ba7f398be245559fc9'); 
+	curl_setopt($ch, CURLOPT_COOKIE,""); // cookie string here
 	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
 	curl_setopt($ch, CURLOPT_HEADER, 1);
 	$data = curl_exec($ch);
-	$trova = "var SECURITYTOKEN = \"";
+	$trova = "https://www.gamesforum.it/logout/?csrfKey=";
 	$pos = strpos($data, $trova) + strlen($trova);
 	$data = substr($data, $pos);
-	$pos = strpos($data, '"');
+	$pos = strpos($data, "'");
 	$security_token = substr($data, 0, $pos);
-	$stringozza = "message=$mess&wysiwyg=0&signature=1&sbutton=Invia+Risposta+Rapida&fromquickreply=1&s=&securitytoken=$security_token&do=postreply&t=$topic&p=who+cares&specifiedpost=0&parseurl=1&loggedinuser=196602&posthash=&poststarttime=: undefined";
-	curl_setopt($ch, CURLOPT_URL, "http://www.gamesforum.it/board/newreply.php?do=postreply&t=$topic");
+	$formData = array(
+		"commentform_".$topicId."_submitted" => "1",
+		"csrfKey" => $security_token,
+		"_contentReply" => "1",
+		"MAX_FILE_SIZE" => "535822336",
+		"topic_comment_".$topicId => $mess,
+		"topic_auto_follow" => "0",
+		"hide" => "0"
+	);
+	$postvars = http_build_query($formData) . "\n";
+	curl_setopt($ch, CURLOPT_URL, "https://www.gamesforum.it/topic$topic");
 	curl_setopt($ch, CURLOPT_POST, 1);
-	curl_setopt($ch, CURLOPT_POSTFIELDS, $stringozza);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $postvars);
 	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
 	curl_setopt($ch, CURLOPT_HEADER, 1);
 	$data = curl_exec($ch);
 }
 
-if($_GET['key'] != "nbzoprmhasi423relsadan23djas"){
-	echo "Non hai i diritti per visualizzare la pagina";
-	die;
-}
+// if($_GET['key'] != "nbzoprmhasi423relsadan23djas"){
+// 	echo "Non hai i diritti per visualizzare la pagina";
+// 	die;
+// }
 
 $excludeSite = array("paypal.com/gb/", "redbox.com", "shopto.net", "/accessories/", "harveynorman.com", "jbhifi.com.au", "bestbuy", "saturn.de", "saturn.com", "muve.pl", "flipkart.com", "ebgames.com", "majornelson.com", "frys.com", "ebay.com", "store.ubi.com/ca/", "ebgames.ca", "itch.io", "amazon.com", "walmart", "playstation", "newegg", "target.com", "gamestop");
 $drmlist = array("GOG", "Steam", "Uplay", "Origin");
@@ -64,7 +74,7 @@ foreach($array["channel"]["item"] as $val){
 	else
 		$ytiad.="[URL=".$link."][$store] $second - $first ($drm)[/URL]<br>";
 }
-$ytiad.="<br>[I]Powered by YesThereIsADeal.com[/I]";
+$ytiad.="<br>[I]Powered by YesThereIsADeal.com[/I]<br>";
 
 $feed = implode(file('https://www.reddit.com/r/GameDeals/new/.rss?limit=40'));
 $xml = simplexml_load_string($feed);
@@ -105,11 +115,10 @@ foreach($array["entry"] as $val){
 }
 $redd.="<br>[I]Powered by Reddit.com - /r/GameDeals[/I]";
 
-$tot='[SIZE=4][COLOR="#0000FF"]Le offerte del giorno[/COLOR][/SIZE]<br><br>';
+$tot='[COLOR="#0000FF"]Le offerte del giorno[/COLOR]<br><br><br>';
 $tot.=$redd;
-$tot.="<br><br>";
+$tot.="<br><br><br><br>";
 $tot.=$ytiad;
-$tot = urlencode($tot);
 $tot = str_replace("%E2%82%AC", "%80", $tot);
 $tot = str_replace("%C2%A3", "%A3", $tot);
 sendPost($tot);
