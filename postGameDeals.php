@@ -44,7 +44,7 @@ $feed = implode(file('http://yesthereisadeal.com/feed/eu2/'));
 $xml = simplexml_load_string($feed, null, LIBXML_NOCDATA);
 $json = json_encode($xml);
 $array = json_decode($json,TRUE);
-$ytiad = "";
+$ytiad = "[LIST]";
 foreach($array["channel"]["item"] as $val){
 	$title = $val["title"];
 	$first = substr($title, 0, strpos($title,"|"));
@@ -70,11 +70,12 @@ foreach($array["channel"]["item"] as $val){
 	if ($drm == "" && $store != "GOG")
 		continue 1;
 	if($store == "Steam" || $store == "GOG")
-		$ytiad.="[URL=".$link."][".$store."] ".$second." - ".$first."[/URL]<br>";
+		$ytiad.="[*][URL=".$link."][".$store."] ".$second." - ".$first."[/URL]\n";
 	else
-		$ytiad.="[URL=".$link."][$store] $second - $first ($drm)[/URL]<br>";
+		$ytiad.="[*][URL=".$link."][$store] $second - $first ($drm)[/URL]\n";
 }
-$ytiad.="<br>[I]Powered by YesThereIsADeal.com[/I]<br>";
+$ytiad.="[/LIST]";
+$ytiad.="<br>[SIZE=3][I]Powered by YesThereIsADeal.com[/I][/SIZE]<br>";
 
 $feed = implode(file('https://www.reddit.com/r/GameDeals/new/.rss?limit=40'));
 $xml = simplexml_load_string($feed);
@@ -82,7 +83,7 @@ $json = json_encode($xml);
 $array = json_decode($json,TRUE);
 $excludeTitle = array("bestbuy", "physical", "harvey norman", "jbhifi", "flipkart", "muve.pl", "best buy", "deals with gold", "eb games", "ebgames", "amazon", "itch.io", "newegg", "shipping", "retail", "psn", "xbox", "playstation", "nintendo", "nsw", "switch", "ps4", "xb1", "3ds", "target", "gamestop", "walmart");
 
-$redd = "";
+$redd = "[LIST]";
 foreach($array["entry"] as $val){
 	$title = $val["title"];
 	$content = $val["content"];
@@ -111,13 +112,14 @@ foreach($array["entry"] as $val){
 	/*if (strpos($ytiad, strtolower($link)) !== false){
 		continue 1;
 	}*/
-	$redd.="[URL=".$link."]".$title."[/URL]<br>";
+	$redd.="[*][URL=".$link."]".$title."[/URL]\n";
 }
-$redd.="<br>[I]Powered by Reddit.com - /r/GameDeals[/I]";
+$redd.="[/LIST]";
+$redd.="<br>[SIZE=3][I]Powered by Reddit.com - /r/GameDeals[/I][/SIZE]";
 
-$tot='[COLOR="#0000FF"]Le offerte del giorno[/COLOR]<br><br><br>';
+$tot='[SIZE=7][COLOR="#FF0000"][B]LE OFFERTE DI OGGI[/B][/COLOR][/SIZE]<br><br>';
 $tot.=$redd;
-$tot.="<br><br><br><br>";
+$tot.="<br><br><br>";
 $tot.=$ytiad;
 $tot = str_replace("%E2%82%AC", "%80", $tot);
 $tot = str_replace("%C2%A3", "%A3", $tot);
