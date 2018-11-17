@@ -1,8 +1,8 @@
 <?php
 
 function sendPost($mess){
-	$topic="/1250-consigli-per-gli-acquisti-best-sezione-games-2017-anche-spazio-pc-tra-i-curatori-di-steam-seguiteci/";
-	$topicId="1250";
+	$topic="/21075-consigli-per-gli-acquisti-best-sezione-games-2017-anche-spazio-pc-tra-i-curatori-di-steam-seguiteci/";
+	$topicId="21075";
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, "https://www.gamesforum.it");
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
