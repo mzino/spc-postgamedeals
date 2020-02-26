@@ -1,20 +1,19 @@
 <?php
 
 function sendPost($mess){
-	$topic="/21075-consigli-per-gli-acquisti-best-sezione-games-2017-anche-spazio-pc-tra-i-curatori-di-steam-seguiteci/";
-	$topicId="21075";
+	$topic="/11474-consigli-per-gli-acquisti-anche-spazio-pc-tra-i-curatori-di-steam-seguiteci/";
+	$topicId="11474";
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, "https://www.gamesforum.it");
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-	curl_setopt($ch, CURLOPT_COOKIE,""); // cookie string here
+	curl_setopt($ch, CURLOPT_COOKIE,"ips4_ipsTimezone=Europe/Rome; ips4_hasJS=true; ips4_device_key=; ips4_IPSSessionFront=; ips4_member_id=; ips4_login_key="); // cookie string here
 	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
 	curl_setopt($ch, CURLOPT_HEADER, 1);
 	$data = curl_exec($ch);
 	$trova = "https://www.gamesforum.it/logout/?csrfKey=";
 	$pos = strpos($data, $trova) + strlen($trova);
 	$data = substr($data, $pos);
-	$pos = strpos($data, "'");
-	$security_token = substr($data, 0, $pos);
+	$security_token = substr($data, 0, 32);
 	$formData = array(
 		"commentform_".$topicId."_submitted" => "1",
 		"csrfKey" => $security_token,
