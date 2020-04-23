@@ -85,7 +85,8 @@ $excludeTitle = array("bestbuy", "physical", "harvey norman", "jbhifi", "flipkar
 $redd = "[LIST]";
 foreach($array["entry"] as $val){
 	$title = $val["title"];
-	$content = $val["content"];
+	$contentarray = $val["content"];
+	$content = $contentarray[0];
 	foreach($excludeTitle as $exc){
 		if (strpos(strtolower($title), $exc) !== false){
 			continue 2;
