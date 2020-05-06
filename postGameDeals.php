@@ -80,7 +80,7 @@ $feed = implode(file('https://www.reddit.com/r/GameDeals/new/.rss?limit=40'));
 $xml = simplexml_load_string($feed);
 $json = json_encode($xml);
 $array = json_decode($json,TRUE);
-$excludeTitle = array("bestbuy", "physical", "harvey norman", "jbhifi", "flipkart", "muve.pl", "best buy", "deals with gold", "eb games", "ebgames", "amazon", "itch.io", "newegg", "shipping", "retail", "psn", "xbox", "playstation", "nintendo", "nsw", "switch", "ps4", "xb1", "3ds", "target", "gamestop", "walmart");
+$excludeTitle = array("bestbuy", "physical", "harvey norman", "jbhifi", "flipkart", "muve.pl", "best buy", "deals with gold", "eb games", "ebgames", "amazon", "itch.io", "newegg", "shipping", "retail", "psn", "xbox", "playstation", "nintendo", "eshop", "nsw", "switch", "ps4", "xb1", "3ds", "target", "gamestop", "walmart");
 
 $redd = "[LIST]";
 foreach($array["entry"] as $val){
