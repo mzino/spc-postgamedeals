@@ -4,13 +4,13 @@ function sendPost($mess){
 	$topic="/14472-consigli-per-gli-acquisti-anche-spazio-pc-tra-i-curatori-di-steam-seguiteci/";
 	$topicId="14472";
 	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, "https://www.gamesforum.it");
+	curl_setopt($ch, CURLOPT_URL, "https://forum.spaziogames.it/");
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 	curl_setopt($ch, CURLOPT_COOKIE,"ips4_ipsTimezone=Europe/Rome; ips4_hasJS=true; ips4_device_key=; ips4_IPSSessionFront=; ips4_member_id=; ips4_login_key="); // cookie string here
 	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
 	curl_setopt($ch, CURLOPT_HEADER, 1);
 	$data = curl_exec($ch);
-	$trova = "https://www.gamesforum.it/logout/?csrfKey=";
+	$trova = "https://forum.spaziogames.it/logout/?csrfKey=";
 	$pos = strpos($data, $trova) + strlen($trova);
 	$data = substr($data, $pos);
 	$security_token = substr($data, 0, 32);
@@ -24,7 +24,7 @@ function sendPost($mess){
 		"hide" => "0"
 	);
 	$postvars = http_build_query($formData) . "\n";
-	curl_setopt($ch, CURLOPT_URL, "https://www.gamesforum.it/topic$topic");
+	curl_setopt($ch, CURLOPT_URL, "https://forum.spaziogames.it/topic$topic");
 	curl_setopt($ch, CURLOPT_POST, 1);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, $postvars);
 	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
