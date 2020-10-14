@@ -1,30 +1,24 @@
 <?php
 
 function sendPost($mess){
-	$topic="/14472-consigli-per-gli-acquisti-anche-spazio-pc-tra-i-curatori-di-steam-seguiteci/";
 	$topicId="14472";
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, "https://forum.spaziogames.it/");
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-	curl_setopt($ch, CURLOPT_COOKIE,"ips4_ipsTimezone=Europe/Rome; ips4_hasJS=true; ips4_device_key=; ips4_IPSSessionFront=; ips4_member_id=; ips4_login_key="); // cookie string here
+	curl_setopt($ch, CURLOPT_COOKIE,"xf_session=;xf_user=;xf_csrf="); // cookie string here
 	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
 	curl_setopt($ch, CURLOPT_HEADER, 1);
 	$data = curl_exec($ch);
-	$trova = "https://forum.spaziogames.it/logout/?csrfKey=";
+	$trova = 'data-csrf=';
 	$pos = strpos($data, $trova) + strlen($trova);
 	$data = substr($data, $pos);
-	$security_token = substr($data, 0, 32);
+	$security_token = substr($data, 1, 43);
 	$formData = array(
-		"commentform_".$topicId."_submitted" => "1",
-		"csrfKey" => $security_token,
-		"_contentReply" => "1",
-		"MAX_FILE_SIZE" => "535822336",
-		"topic_comment_".$topicId => $mess,
-		"topic_auto_follow" => "0",
-		"hide" => "0"
+		"message" => $mess,
+		"_xfToken" => $security_token
 	);
 	$postvars = http_build_query($formData) . "\n";
-	curl_setopt($ch, CURLOPT_URL, "https://forum.spaziogames.it/topic$topic");
+	curl_setopt($ch, CURLOPT_URL, "https://forum.spaziogames.it/threads/.".$topicId."/add-reply");
 	curl_setopt($ch, CURLOPT_POST, 1);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, $postvars);
 	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
@@ -39,7 +33,7 @@ function sendPost($mess){
 
 $excludeSite = array("paypal.com/gb/", "redbox.com", "shopto.net", "/accessories/", "harveynorman.com", "jbhifi.com.au", "bestbuy", "saturn.de", "saturn.com", "muve.pl", "flipkart.com", "ebgames.com", "majornelson.com", "frys.com", "ebay.com", "store.ubi.com/ca/", "ebgames.ca", "itch.io", "amazon.com", "walmart", "playstation", "newegg", "target.com", "gamestop");
 $drmlist = array("GOG", "Steam", "Uplay", "Origin");
-$feed = implode(file('http://yesthereisadeal.com/feed/eu2/'));
+$feed = implode(file('https://yesthereisadeal.com/feed/eu2/'));
 $xml = simplexml_load_string($feed, null, LIBXML_NOCDATA);
 $json = json_encode($xml);
 $array = json_decode($json,TRUE);
@@ -74,7 +68,7 @@ foreach($array["channel"]["item"] as $val){
 		$ytiad.="[*][URL=".$link."][$store] $second - $first ($drm)[/URL]\n";
 }
 $ytiad.="[/LIST]";
-$ytiad.="<br>[SIZE=3][I]Powered by YesThereIsADeal.com[/I][/SIZE]<br>";
+$ytiad.="\n[SIZE=3][I]Powered by YesThereIsADeal.com[/I][/SIZE]\n";
 
 $feed = implode(file('https://www.reddit.com/r/GameDeals/new/.rss?limit=40'));
 $xml = simplexml_load_string($feed);
@@ -114,13 +108,20 @@ foreach($array["entry"] as $val){
 	$redd.="[*][URL=".$link."]".$title."[/URL]\n";
 }
 $redd.="[/LIST]";
-$redd.="<br>[SIZE=3][I]Powered by Reddit.com - /r/GameDeals[/I][/SIZE]";
+$redd.="\n[SIZE=3][I]Powered by Reddit.com - /r/GameDeals[/I][/SIZE]";
 
-$tot='[SIZE=7][COLOR="#FF0000"][B]LE OFFERTE DI OGGI[/B][/COLOR][/SIZE]<br><br>';
+$tot="[SIZE=7][COLOR=#FF0000][B]LE OFFERTE DI OGGI[/B][/COLOR][/SIZE]\n\n";
 $tot.=$redd;
-$tot.="<br><br><br>";
+$tot.="\n\n\n";
 $tot.=$ytiad;
 $tot = str_replace("%E2%82%AC", "%80", $tot);
 $tot = str_replace("%C2%A3", "%A3", $tot);
+$tot = str_replace("&euro;", "€", $tot);
+$tot = str_replace(":d", ": d", $tot);
+$tot = str_replace(":p", ": p", $tot);
+$tot = str_replace(":D", ": D", $tot);
+$tot = str_replace(":P", ": P", $tot);
+$tot = str_replace(":)", ": )", $tot);
+$tot = str_replace(":(", ": (", $tot);
 sendPost($tot);
 ?>
